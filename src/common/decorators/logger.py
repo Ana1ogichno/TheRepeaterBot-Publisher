@@ -1,17 +1,22 @@
+from functools import wraps
 import logging
 
 
-def logging_function_info(logger: logging.Logger, description: str | None = None):
+def logging_function_info(logger: logging.Logger, description: str = None):
+    """Декоратор для логирования вызова функций"""
+
     def decorator(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
+
+            message: str = f"Start: {func.__name__}"
+
             if description:
-                logger.info(f"Start: {func.__name__}, description: {description}")
-            else:
-                logger.info(f"Start: {func.__name__}")
+                message = f"{message}, description: {description}"
 
-            result = func(*args, **kwargs)
+            logger.info(message)
 
-            return result
+            return func(*args, **kwargs)
 
         return wrapper
 
