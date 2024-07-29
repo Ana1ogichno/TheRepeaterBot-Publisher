@@ -25,7 +25,7 @@ async def start_handler(message: Message, state: FSMContext):
 
 @router.message(States.START, F.text == StartKBEnum.START.value)
 async def start_processing(message: Message, state: FSMContext):
-    user_service = UserService()
+    user_service = UserService.register()
 
     user_id = message.from_user.id
 

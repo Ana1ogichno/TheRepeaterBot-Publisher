@@ -3,10 +3,14 @@ from enum import Enum
 
 class SchemasEnum(str, Enum):
     USERS = "users"
+    TELEGRAM = "telegram"
 
 
 class TablesEnum(str, Enum):
     USER = "user"
+    POST = "post"
+    CHANNEL = "channel"
+    MEDIA = "media"
 
 
 class StartKBEnum(str, Enum):
@@ -23,3 +27,9 @@ class MainKBEnum(str, Enum):
 class FinishKBEnum(str, Enum):
     RETRY = "Начать с начала"
     FINISH = "Выход"
+
+
+class MessageKBEnum(str, Enum):
+    GET_MESSAGE = "Получить сообщение"
+    GET_FILTER_MESSAGE = "Поиск по прочитанным сообщениям"
+    BACK_TO_MAIN = "Вернуться в главное меню"

@@ -28,6 +28,10 @@ class UserService:
 
         return False
 
+    @staticmethod
+    def register():
+        return UserService()
+
 
 
 

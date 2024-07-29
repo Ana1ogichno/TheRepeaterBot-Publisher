@@ -20,6 +20,11 @@ class LoggerManager:
     __user_log_level: str = settings.logger.USER_LOGGER_LEVEL
     __user_log_format: str = settings.logger.USER_LOGGER_FORMAT
 
+    # Message logger
+    __message_log_name: str = settings.logger.USER_LOGGER_NAME
+    __message_log_level: str = settings.logger.USER_LOGGER_LEVEL
+    __message_log_format: str = settings.logger.USER_LOGGER_FORMAT
+
     @staticmethod
     def __configure_logger(logger: logging.Logger, level: str, format_str: str) -> None:
         logger.setLevel(level)
@@ -63,4 +68,12 @@ class LoggerManager:
             name=cls.__user_log_name,
             level=cls.__user_log_level,
             format_str=cls.__user_log_format,
+        )
+
+    @classmethod
+    def get_message_logger(cls) -> logging.Logger:
+        return cls.__get_logger(
+            name=cls.__message_log_name,
+            level=cls.__message_log_level,
+            format_str=cls.__message_log_format,
         )
