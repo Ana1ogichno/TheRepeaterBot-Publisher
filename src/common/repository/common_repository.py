@@ -30,3 +30,15 @@ class CommonRepository:
                 self._db_client.rollback()
 
         return False
+
+    async def execute_query_with_one_result(self, query: str):
+        with self._db_client.cursor() as cursor:
+            try:
+                cursor.execute(query)
+                return cursor.fetchone()
+
+            except Exception as e:
+                self._psql_logger.error(f"{e}")
+                self._db_client.rollback()
+
+        return False

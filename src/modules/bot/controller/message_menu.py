@@ -17,7 +17,15 @@ async def get_message(message: Message, state: FSMContext):
 
     post = await post_service.get_message()
 
-    print(post)
+    await message.answer(f"Канал: {post["channel"]["link"]}")
+    await message.answer("Текст поста:")
+    await message.answer(post["raw_text"])
+    if post["processed_text"]:
+        await message.answer("Обработанный текст поста:")
+        await message.answer(post["processed_text"])
+    await message.answer(f"Дата поста: {post["created_at"]}")
+    if post["media"]:
+        await message.answer("Медиа:")
 
 
 @router.message(States.MESSAGE, F.text == MessageKBEnum.BACK_TO_MAIN.value)

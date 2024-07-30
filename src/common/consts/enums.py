@@ -31,5 +31,4 @@ class FinishKBEnum(str, Enum):
 
 class MessageKBEnum(str, Enum):
     GET_MESSAGE = "Получить сообщение"
-    GET_FILTER_MESSAGE = "Поиск по прочитанным сообщениям"
     BACK_TO_MAIN = "Вернуться в главное меню"
