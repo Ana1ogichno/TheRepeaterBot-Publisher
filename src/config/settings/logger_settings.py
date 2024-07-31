@@ -23,3 +23,11 @@ class LoggerSettings:
     USER_LOGGER_FORMAT: str = (
         "%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
     )
+
+    # --================ Message Module Settings ================-- #
+
+    MESSAGE_LOGGER_NAME: str = "MESSAGE"
+    MESSAGE_LOGGER_LEVEL: str = "INFO"
+    MESSAGE_LOGGER_FORMAT: str = (
+        "%(asctime)s - [%(levelname)s] - %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+    )
