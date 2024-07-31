@@ -4,5 +4,5 @@ from .enums import (
     FinishKBEnum,
     StartKBEnum,
     MainKBEnum,
-    MessageKBEnum,
+    PostKBEnum,
 )

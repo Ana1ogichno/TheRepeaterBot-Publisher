@@ -18,7 +18,7 @@ class StartKBEnum(str, Enum):
 
 
 class MainKBEnum(str, Enum):
-    MESSAGES = "Просмотр сообщений"
+    POSTS = "Просмотр сообщений"
     SOURCES = "Просмотр списка источников"
     TARGETS = "Просмотр списка получателей"
     FINISH = "Выход"
@@ -29,6 +29,8 @@ class FinishKBEnum(str, Enum):
     FINISH = "Выход"
 
 
-class MessageKBEnum(str, Enum):
-    GET_MESSAGE = "Получить сообщение"
-    BACK_TO_MAIN = "Вернуться в главное меню"
+class PostKBEnum(str, Enum):
+    EDIT = "Редактировать"
+    PUBLISH = "Опубликовать"
+    SKIP = "Пропустить"
+    BACK = "Назад"

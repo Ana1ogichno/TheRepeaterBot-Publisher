@@ -4,6 +4,7 @@ from src.common import LoggerManager
 from src.common.decorators import logging_function_info
 from src.common.repository.common_repository import CommonRepository
 from src.config.db.postgres.tables import PostgresTables
+from aiogram.types import Message
 
 message_logger = LoggerManager.get_message_logger()
 
@@ -13,7 +14,7 @@ class PostService:
         self._common_repository = CommonRepository()
 
     @logging_function_info(logger=message_logger, description="Get count of unread messages")
-    async def get_unread_message_count(self):
+    async def get_unread_post_count(self):
 
         count = await self._common_repository.execute_query_with_result(
             query=Query()
@@ -26,7 +27,7 @@ class PostService:
         return count[0][0]
 
     @logging_function_info(logger=message_logger, description="Get message")
-    async def get_message(self):
+    async def get_post(self):
 
         json_agg = CustomFunction('json_agg', [''])
         json_build_object = CustomFunction('json_build_object', ['key1', 'value1', 'key2', 'value2'])
@@ -74,7 +75,7 @@ class PostService:
             .get_sql()
         )
 
-        message = {
+        post = {
             "sid": result[0],
             "raw_text": result[1],
             "processed_text": result[2],
@@ -88,7 +89,21 @@ class PostService:
             "media": result[8]
         }
 
-        return message
+        return post
+
+    @logging_function_info(logger=message_logger)
+    async def send_post(self, message: Message, post: dict):
+        await message.answer(f"Канал: {post["channel"]["link"]}")
+        await message.answer("Текст поста:")
+        await message.answer(post["raw_text"])
+        if post["processed_text"]:
+            await message.answer("Обработанный текст поста:")
+            await message.answer(post["processed_text"])
+        await message.answer(f"Дата поста: {post["created_at"]}")
+        if post["media"]:
+            await message.answer("Медиа:")
+
+        # TODO Сюда надо будет добавить отправку сообщения с картинкой message.answer_photo
 
     @staticmethod
     def register():
