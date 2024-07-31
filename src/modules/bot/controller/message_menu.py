@@ -27,6 +27,8 @@ async def get_message(message: Message, state: FSMContext):
     if post["media"]:
         await message.answer("Медиа:")
 
+    # TODO Сюда надо будет добавить отправку сообщения с картинкой message.answer_photo
+
 
 @router.message(States.MESSAGE, F.text == MessageKBEnum.BACK_TO_MAIN.value)
 async def exit_to_main_menu(message: Message, state: FSMContext):
