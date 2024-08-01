@@ -1,6 +1,6 @@
 from src.modules.bot.keyboard.finish import kb as finish_kb
 from src.modules.bot.keyboard.main import kb as main_kb
-from src.modules.bot.keyboard.message import kb as message_kb
+from src.modules.bot.keyboard.post import kb as message_kb
 from src.modules.bot.keyboard.start import kb as start_kb
 
 

@@ -14,17 +14,19 @@ base_logger = LoggerManager.get_base_logger()
 router = Router()
 
 
-@router.message(States.MAIN, F.text == MainKBEnum.MESSAGES.value)
+@router.message(States.MAIN, F.text == MainKBEnum.POSTS.value)
 async def check_messages(message: Message, state: FSMContext):
     post_service = PostService.register()
 
-    unread_message_count = await post_service.get_unread_message_count()
-    await state.set_state(States.MESSAGE)
+    unread_post_count = await post_service.get_unread_post_count()
+    await state.set_state(States.POSTS)
 
     await message.answer(
-        f"У вас {unread_message_count} непрочитанных сообщений(ия)",
+        f"У вас {unread_post_count} непрочитанных сообщений(ия)",
         reply_markup=KeyboardsManager.message_kb
     )
+    post = await post_service.get_post()
+    await post_service.send_post(message, post)
 
 
 @router.message(States.MAIN, F.text == MainKBEnum.SOURCES.value)
@@ -44,7 +46,7 @@ async def get_sources(message: Message, state: FSMContext):
 
 
 @router.message(States.MAIN, F.text == MainKBEnum.TARGETS.value)
-async def get_sources(message: Message, state: FSMContext):
+async def get_targets(message: Message, state: FSMContext):
     channel_service = ChannelService.register()
 
     channel_list = await channel_service.get_channel_list(
