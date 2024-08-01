@@ -1,12 +1,12 @@
 from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 
-from src.common.consts import PostKBEnum
+from src.common.consts import ViewPostKBEnum
 
 
-edit_button = KeyboardButton(text=PostKBEnum.EDIT.value)
-publish_button = KeyboardButton(text=PostKBEnum.PUBLISH.value)
-skip_button = KeyboardButton(text=PostKBEnum.SKIP.value)
-back_button = KeyboardButton(text=PostKBEnum.BACK.value)
+edit_button = KeyboardButton(text=ViewPostKBEnum.EDIT.value)
+publish_button = KeyboardButton(text=ViewPostKBEnum.PUBLISH.value)
+skip_button = KeyboardButton(text=ViewPostKBEnum.SKIP.value)
+back_button = KeyboardButton(text=ViewPostKBEnum.BACK.value)
 
 
 kb = ReplyKeyboardMarkup(

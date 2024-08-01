@@ -8,8 +8,8 @@ from src.modules.bot.controller import (
     finish_router,
     start_router,
     main_router,
-    post_router,
 )
+from src.modules.post.controller import post_router
 
 
 async def main():
