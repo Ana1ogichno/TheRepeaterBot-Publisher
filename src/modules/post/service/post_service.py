@@ -1,4 +1,5 @@
-from pypika import Query, functions, CustomFunction, Case, Field, Order
+from uuid import UUID
+from pypika import Query, functions, CustomFunction, Case
 
 from src.common import LoggerManager
 from src.common.decorators import logging_function_info
@@ -13,7 +14,9 @@ class PostService:
     def __init__(self):
         self._common_repository = CommonRepository()
 
-    @logging_function_info(logger=message_logger, description="Get count of unread messages")
+    @logging_function_info(
+        logger=message_logger, description="Get count of unread messages"
+    )
     async def get_unread_post_count(self):
 
         count = await self._common_repository.execute_query_with_result(
@@ -29,14 +32,19 @@ class PostService:
     @logging_function_info(logger=message_logger, description="Get message")
     async def get_post(self):
 
-        json_agg = CustomFunction('json_agg', [''])
-        json_build_object = CustomFunction('json_build_object', ['key1', 'value1', 'key2', 'value2'])
+        json_agg = CustomFunction("json_agg", [""])
+        json_build_object = CustomFunction(
+            "json_build_object", ["key1", "value1", "key2", "value2"]
+        )
 
         result = await self._common_repository.execute_query_with_one_result(
             query=Query()
             .from_(PostgresTables.post_table)
             .join(PostgresTables.channel_table)
-            .on(PostgresTables.post_table.source_channel_sid == PostgresTables.channel_table.sid)
+            .on(
+                PostgresTables.post_table.source_channel_sid
+                == PostgresTables.channel_table.sid
+            )
             .left_join(PostgresTables.media_table)
             .on(PostgresTables.post_table.sid == PostgresTables.media_table.post_sid)
             .select(
@@ -51,15 +59,19 @@ class PostService:
                 functions.Coalesce(
                     json_agg(
                         Case()
-                        .when(PostgresTables.media_table.sid.isnotnull(),
+                        .when(
+                            PostgresTables.media_table.sid.isnotnull(),
                             json_build_object(
-                                'sid', PostgresTables.media_table.sid,
-                                'path', PostgresTables.media_table.path
-                            )
+                                "sid",
+                                PostgresTables.media_table.sid,
+                                "path",
+                                PostgresTables.media_table.path,
+                            ),
                         )
                         .else_(None)
-                    ), '[]'
-                ).as_('media')
+                    ),
+                    "[]",
+                ).as_("media"),
             )
             .groupby(
                 PostgresTables.post_table.sid,
@@ -86,7 +98,7 @@ class PostService:
                 "id": result[6],
                 "link": result[7],
             },
-            "media": result[8]
+            "media": result[8],
         }
 
         return post
@@ -104,6 +116,47 @@ class PostService:
             await message.answer("Медиа:")
 
         # TODO Сюда надо будет добавить отправку сообщения с картинкой message.answer_photo
+
+    @logging_function_info(logger=message_logger)
+    async def is_exist_post(self, post_sid: UUID) -> bool:
+        post = await self._common_repository.execute_query_with_one_result(
+            query=Query()
+            .from_(PostgresTables.post_table)
+            .select("*")
+            .where(PostgresTables.post_table.sid == post_sid)
+            .get_sql()
+        )
+        if post:
+            return True
+        else:
+            return False
+
+    @logging_function_info(logger=message_logger)
+    async def set_processed_text(self, post_sid: UUID, processed_text: str) -> bool:
+        if not await self.is_exist_post(post_sid):
+            return False
+
+        await self._common_repository.execute_query(
+            query=Query()
+            .update(PostgresTables.post_table)
+            .set(PostgresTables.post_table.processed_text, processed_text)
+            .where(PostgresTables.post_table.sid == post_sid)
+            .get_sql()
+        )
+        return True
+
+    @logging_function_info(logger=message_logger)
+    async def set_viewed(self, post_sid: UUID, is_viewed: bool = True) -> bool:
+        if not await self.is_exist_post(post_sid):
+            return False
+        await self._common_repository.execute_query(
+            query=Query()
+            .update(PostgresTables.post_table)
+            .set(PostgresTables.post_table.is_viewed, is_viewed)
+            .where(PostgresTables.post_table.sid == post_sid)
+            .get_sql()
+        )
+        return True
 
     @staticmethod
     def register():

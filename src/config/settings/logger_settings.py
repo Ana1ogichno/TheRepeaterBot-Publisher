@@ -1,4 +1,3 @@
-
 class LoggerSettings:
     # --================ Base Logger Settings ================-- #
 

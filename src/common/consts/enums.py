@@ -29,8 +29,13 @@ class FinishKBEnum(str, Enum):
     FINISH = "Выход"
 
 
-class PostKBEnum(str, Enum):
+class ViewPostKBEnum(str, Enum):
     EDIT = "Редактировать"
     PUBLISH = "Опубликовать"
     SKIP = "Пропустить"
     BACK = "Назад"
+
+
+class EditPostKBEnum(str, Enum):
+    SAVE = "Сохранить"
+    CANCEL = "Отмена"

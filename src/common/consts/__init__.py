@@ -4,5 +4,6 @@ from .enums import (
     FinishKBEnum,
     StartKBEnum,
     MainKBEnum,
-    PostKBEnum,
+    ViewPostKBEnum,
+    EditPostKBEnum,
 )

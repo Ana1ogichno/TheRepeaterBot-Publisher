@@ -13,5 +13,5 @@ kb = ReplyKeyboardMarkup(
     keyboard=[[post_button], [sources_button], [targets_button], [finish_button]],
     resize_keyboard=True,
     one_time_keyboard=True,
-    input_field_placeholder="Воспользуйтесь меню ниже"
+    input_field_placeholder="Воспользуйтесь меню ниже",
 )

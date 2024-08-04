@@ -19,7 +19,7 @@ async def start_handler(message: Message, state: FSMContext):
     await state.set_state(States.START)
     await message.answer(
         f"Для начала работы нажмите кнопку '{StartKBEnum.START.value}'",
-        reply_markup=KeyboardsManager.start_kb
+        reply_markup=KeyboardsManager.start_kb,
     )
 
 
@@ -36,11 +36,10 @@ async def start_processing(message: Message, state: FSMContext):
         )
         return None
 
-    await message.answer(f"Пользователь {message.from_user.username} идентифицирован в системе.")
+    await message.answer(
+        f"Пользователь {message.from_user.username} идентифицирован в системе."
+    )
 
     await state.set_state(States.MAIN)
 
-    await message.answer(
-        "Хорошей работы.",
-        reply_markup=KeyboardsManager.main_kb
-    )
+    await message.answer("Хорошей работы.", reply_markup=KeyboardsManager.main_kb)

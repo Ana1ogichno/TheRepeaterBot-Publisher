@@ -16,8 +16,7 @@ router = Router()
 async def retry(message: Message, state: FSMContext):
     await state.set_state(States.MAIN)
     await message.answer(
-        "Переход в главное меню.",
-        reply_markup=KeyboardsManager.main_kb
+        "Переход в главное меню.", reply_markup=KeyboardsManager.main_kb
     )
 
 
@@ -26,5 +25,5 @@ async def exit_from_bot(message: Message, state: FSMContext):
     await state.set_state(States.START)
     await message.answer(
         f"Для начала работы нажмите кнопку '{StartKBEnum.START.value}'",
-        reply_markup=KeyboardsManager.start_kb
+        reply_markup=KeyboardsManager.start_kb,
     )
