@@ -1,4 +1,4 @@
-from pypika import Query, functions
+from pypika import Query
 
 from src.common import LoggerManager
 from src.common.decorators import logging_function_info
@@ -13,11 +13,11 @@ class ChannelService:
     def __init__(self):
         self._common_repository = CommonRepository()
 
-    @logging_function_info(logger=message_logger, description="Get list of channel with source/target filter")
-    async def get_channel_list(
-            self,
-            is_source: bool
-    ):
+    @logging_function_info(
+        logger=message_logger,
+        description="Get list of channel with source/target filter",
+    )
+    async def get_channel_list(self, is_source: bool):
 
         channels = await self._common_repository.execute_query_with_result(
             query=Query()

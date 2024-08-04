@@ -13,10 +13,10 @@ class UserService:
     def __init__(self):
         self._common_repository = CommonRepository()
 
-    @logging_function_info(logger=user_logger, description="Validate existing user with this id")
-    async def validate_user_id(
-        self, user_id: int
-    ):
+    @logging_function_info(
+        logger=user_logger, description="Validate existing user with this id"
+    )
+    async def validate_user_id(self, user_id: int):
         if await self._common_repository.execute_query_with_result(
             query=Query()
             .from_(PostgresSchemas.users_schema.user)
@@ -31,9 +31,3 @@ class UserService:
     @staticmethod
     def register():
         return UserService()
-
-
-
-
-
-

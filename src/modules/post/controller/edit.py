@@ -12,19 +12,26 @@ router = Router()
 post_service = PostService.register()
 
 
-@router.message(States.EDIT_POSTS, F.text == EditPostKBEnum.CANCEL)
+@router.message(States.EDIT_POST, F.text == EditPostKBEnum.CANCEL)
 async def back(message: Message, state: FSMContext):
-    await message.answer(
-        "Отмена",
-        reply_markup=KeyboardsManager.view_post_kb
-    )
+    await message.answer("Отмена", reply_markup=KeyboardsManager.view_post_kb)
     post = (await state.get_data())["post"]
-    print(post)
     await post_service.send_post(message, post)
-    await state.set_state(States.VIEW_POSTS)
+    await state.set_state(States.VIEW_POST)
+    await state.update_data(post=post)
 
 
-@router.message(States.EDIT_POSTS)
+@router.message(States.EDIT_POST)
 async def edit(message: Message, state: FSMContext):
-
-    await message.answer("Здесь будет сохранение отредактированного сообщения")
+    post = (await state.get_data())["post"]
+    if await post_service.set_processed_text(
+        post_sid=post["sid"], processed_text=message.text
+    ):
+        answer_text = "Текст поста успешно отредактирован"
+        post["processed_text"] = message.text
+    else:
+        answer_text = "Не удалось отредактировать текст поста"
+    await message.answer(answer_text, reply_markup=KeyboardsManager.view_post_kb)
+    await post_service.send_post(message, post)
+    await state.set_state(States.VIEW_POST)
+    await state.update_data(post=post)

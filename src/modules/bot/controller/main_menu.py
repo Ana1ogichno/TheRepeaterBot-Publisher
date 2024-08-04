@@ -19,13 +19,13 @@ async def view_posts(message: Message, state: FSMContext):
     post_service = PostService.register()
 
     unread_post_count = await post_service.get_unread_post_count()
-    await state.set_state(States.VIEW_POSTS)
-
     await message.answer(
         f"У вас {unread_post_count} непрочитанных сообщений(ия)",
-        reply_markup=KeyboardsManager.view_post_kb
+        reply_markup=KeyboardsManager.view_post_kb,
     )
+
     post = await post_service.get_post()
+    await state.set_state(States.VIEW_POST)
     await post_service.send_post(message, post)
     await state.update_data(post=post)
 
@@ -34,15 +34,13 @@ async def view_posts(message: Message, state: FSMContext):
 async def get_sources(message: Message, state: FSMContext):
     channel_service = ChannelService.register()
 
-    channel_list = await channel_service.get_channel_list(
-        is_source=True
-    )
+    channel_list = await channel_service.get_channel_list(is_source=True)
     channel_list = tuple(i[0] for i in channel_list)
-    channels = ('\n  - '.join(channel_list))
+    channels = "\n  - ".join(channel_list)
 
     await message.answer(
         f"Список каналов-источников:\n  - {channels}",
-        reply_markup=KeyboardsManager.main_kb
+        reply_markup=KeyboardsManager.main_kb,
     )
 
 
@@ -50,15 +48,13 @@ async def get_sources(message: Message, state: FSMContext):
 async def get_targets(message: Message, state: FSMContext):
     channel_service = ChannelService.register()
 
-    channel_list = await channel_service.get_channel_list(
-        is_source=False
-    )
+    channel_list = await channel_service.get_channel_list(is_source=False)
     channel_list = tuple(i[0] for i in channel_list)
-    channels = ('\n  - '.join(channel_list))
+    channels = "\n  - ".join(channel_list)
 
     await message.answer(
         f"Список каналов-получателей:\n  - {channels}",
-        reply_markup=KeyboardsManager.main_kb
+        reply_markup=KeyboardsManager.main_kb,
     )
 
 
@@ -67,5 +63,5 @@ async def exit_from_bot(message: Message, state: FSMContext):
     await state.set_state(States.START)
     await message.answer(
         f"Для начала работы нажмите кнопку '{StartKBEnum.START.value}'",
-        reply_markup=KeyboardsManager.start_kb
+        reply_markup=KeyboardsManager.start_kb,
     )

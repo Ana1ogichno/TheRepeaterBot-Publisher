@@ -1,2 +1,1 @@
-from .router import router as post_router
-
+from .main_controller import router as post_router

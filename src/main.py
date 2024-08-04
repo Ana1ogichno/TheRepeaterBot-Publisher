@@ -13,7 +13,10 @@ from src.modules.post.controller import post_router
 
 
 async def main():
-    bot = Bot(token=settings.bot.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(
+        token=settings.bot.BOT_TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
     dp = Dispatcher(storage=MemoryStorage())
     dp.include_router(start_router)
     dp.include_router(main_router)
