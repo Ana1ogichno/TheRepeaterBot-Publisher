@@ -6,7 +6,7 @@ from src.common import LoggerManager
 from src.common.consts import MainKBEnum, StartKBEnum
 from src.config.bot.states import States
 from src.modules.bot import KeyboardsManager
-from src.modules.channel.service.channel_service import ChannelService
+from src.modules.channel.service import ChannelService
 from src.modules.post.service.post_service import PostService
 
 
@@ -35,7 +35,7 @@ async def get_sources(message: Message, state: FSMContext):
     channel_service = ChannelService.register()
 
     channel_list = await channel_service.get_channel_list(is_source=True)
-    channel_list = tuple(i[0] for i in channel_list)
+    channel_list = (i[2] for i in channel_list)
     channels = "\n  - ".join(channel_list)
 
     await message.answer(
@@ -49,7 +49,7 @@ async def get_targets(message: Message, state: FSMContext):
     channel_service = ChannelService.register()
 
     channel_list = await channel_service.get_channel_list(is_source=False)
-    channel_list = tuple(i[0] for i in channel_list)
+    channel_list = (i[2] for i in channel_list)
     channels = "\n  - ".join(channel_list)
 
     await message.answer(

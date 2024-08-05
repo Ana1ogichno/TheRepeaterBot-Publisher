@@ -14,9 +14,10 @@ post_service = PostService.register()
 
 @router.message(States.EDIT_POST, F.text == EditPostKBEnum.CANCEL)
 async def back(message: Message, state: FSMContext):
-    await message.answer("Отмена", reply_markup=KeyboardsManager.view_post_kb)
     post = (await state.get_data())["post"]
-    await post_service.send_post(message, post)
+    await post_service.send_post(
+        message, post, reply_markup=KeyboardsManager.view_post_kb
+    )
     await state.set_state(States.VIEW_POST)
     await state.update_data(post=post)
 
@@ -31,7 +32,9 @@ async def edit(message: Message, state: FSMContext):
         post["processed_text"] = message.text
     else:
         answer_text = "Не удалось отредактировать текст поста"
-    await message.answer(answer_text, reply_markup=KeyboardsManager.view_post_kb)
-    await post_service.send_post(message, post)
+    await message.answer(answer_text)
+    await post_service.send_post(
+        message, post, reply_markup=KeyboardsManager.view_post_kb
+    )
     await state.set_state(States.VIEW_POST)
     await state.update_data(post=post)
