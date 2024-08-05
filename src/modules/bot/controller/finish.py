@@ -12,7 +12,7 @@ base_logger = LoggerManager.get_base_logger()
 router = Router()
 
 
-@router.message(States.FINISH, F.text == FinishKBEnum.RETRY.value)
+@router.message(States.FINISH, F.text == FinishKBEnum.RETRY)
 async def retry(message: Message, state: FSMContext):
     await state.set_state(States.MAIN)
     await message.answer(
@@ -20,7 +20,7 @@ async def retry(message: Message, state: FSMContext):
     )
 
 
-@router.message(States.FINISH, F.text == FinishKBEnum.FINISH.value)
+@router.message(States.FINISH, F.text == FinishKBEnum.FINISH)
 async def exit_from_bot(message: Message, state: FSMContext):
     await state.set_state(States.START)
     await message.answer(

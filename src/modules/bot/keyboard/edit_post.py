@@ -12,5 +12,6 @@ kb = ReplyKeyboardMarkup(
         # [edit_button],
         [cancel_button],
     ],
+    one_time_keyboard=True,
     resize_keyboard=True,
 )

@@ -1,11 +1,12 @@
 from uuid import UUID
+from aiogram.types import Message, ReplyKeyboardMarkup
 from pypika import Query, functions, CustomFunction, Case
 
 from src.common import LoggerManager
 from src.common.decorators import logging_function_info
 from src.common.repository.common_repository import CommonRepository
 from src.config.db.postgres.tables import PostgresTables
-from aiogram.types import Message
+from src.config.bot.session import bot
 
 message_logger = LoggerManager.get_message_logger()
 
@@ -83,6 +84,7 @@ class PostService:
                 PostgresTables.channel_table.id,
                 PostgresTables.channel_table.link,
             )
+            .where(PostgresTables.post_table.is_viewed == False)
             .orderby(PostgresTables.post_table.created_at)
             .get_sql()
         )
@@ -104,14 +106,22 @@ class PostService:
         return post
 
     @logging_function_info(logger=message_logger)
-    async def send_post(self, message: Message, post: dict):
+    async def send_post(
+        self, message: Message, post: dict, reply_markup: ReplyKeyboardMarkup = None
+    ):
         await message.answer(f"Канал: {post["channel"]["link"]}")
-        await message.answer("Текст поста:")
-        await message.answer(post["raw_text"])
+        if post["raw_text"]:
+            await message.answer("Текст поста:")
+            await message.answer(post["raw_text"])
+        else:
+            await message.answer("У данного поста нет текста")
         if post["processed_text"]:
             await message.answer("Обработанный текст поста:")
             await message.answer(post["processed_text"])
-        await message.answer(f"Дата поста: {post["created_at"]}")
+        await message.answer(
+            f"Дата поста: {post["created_at"]}",
+            reply_markup=reply_markup if reply_markup else None,
+        )
         if post["media"]:
             await message.answer("Медиа:")
 
@@ -156,6 +166,19 @@ class PostService:
             .where(PostgresTables.post_table.sid == post_sid)
             .get_sql()
         )
+        return True
+
+    @logging_function_info(logger=message_logger)
+    async def publish(self, post: dict, channel_id: int) -> bool:
+        if post["processed_text"]:
+            post_text = post["processed_text"]
+        elif post["raw_text"]:
+            post_text = post["raw_text"]
+        else:
+            message_logger.warning(f"No post text, post_sid={post['sid']}")
+            return False
+        print(channel_id)
+        await bot.send_message(chat_id=channel_id, text=post_text)
         return True
 
     @staticmethod

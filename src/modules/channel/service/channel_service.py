@@ -22,7 +22,11 @@ class ChannelService:
         channels = await self._common_repository.execute_query_with_result(
             query=Query()
             .from_(PostgresSchemas.telegram_schema.channel)
-            .select(PostgresTables.channel_table.link)
+            .select(
+                PostgresTables.channel_table.id,
+                PostgresTables.channel_table.name,
+                PostgresTables.channel_table.link,
+            )
             .where(PostgresTables.channel_table.is_source == is_source)
             .get_sql()
         )
